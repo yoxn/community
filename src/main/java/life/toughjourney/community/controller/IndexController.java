@@ -20,7 +20,7 @@ public class IndexController {
 
     @Autowired
     private UserMapper userMapper;
-    @GetMapping("/ ")
+    @GetMapping("/")
     public String index(HttpServletRequest request){
         Cookie[] cookies = request.getCookies();
         for(Cookie cookie : cookies){

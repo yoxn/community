@@ -1,5 +1,6 @@
 package life.toughjourney.community.service;
 
+import life.toughjourney.community.dto.PaginationDto;
 import life.toughjourney.community.dto.QuestionDto;
 import life.toughjourney.community.mapper.QuestionMapper;
 import life.toughjourney.community.mapper.UserMapper;
@@ -26,12 +27,22 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDto> list(Integer page, Integer size) {
+    public PaginationDto list(Integer page, Integer size) {
+        PaginationDto paginationDto = new PaginationDto();
 
+        Integer totalCount = questionMapper.count();
+        paginationDto.setPagination(totalCount,page,size);
+        if (page < 1) {
+            page = 1;
+        }
+        if(page > paginationDto.getTotalPage()){
+            page = paginationDto.getTotalPage();
+        }
         Integer offset = size * (page - 1);
 
         List<Question> questions = questionMapper.list(offset, size);
         List<QuestionDto> questionDtoList = new ArrayList<>();
+
         for (Question question : questions) {
             User user = userMapper.findById(question.getCreator());
             QuestionDto questionDto = new QuestionDto();
@@ -39,6 +50,8 @@ public class QuestionService {
             questionDto.setUser(user);
             questionDtoList.add(questionDto);
         }
-        return questionDtoList;
+        paginationDto.setQuestions(questionDtoList);
+
+        return paginationDto;
     }
 }

@@ -1,5 +1,6 @@
 package life.toughjourney.community.controller;
 
+import life.toughjourney.community.dto.PaginationDto;
 import life.toughjourney.community.dto.QuestionDto;
 import life.toughjourney.community.mapper.QuestionMapper;
 import life.toughjourney.community.mapper.UserMapper;
@@ -52,8 +53,8 @@ public class IndexController {
             }
         }
 
-        List<QuestionDto> questionList = questionService.list(page,size);
-        model.addAttribute("questions",questionList);
+        PaginationDto pagination = questionService.list(page,size);
+        model.addAttribute("pagination",pagination);
         return "index";
     }
 }

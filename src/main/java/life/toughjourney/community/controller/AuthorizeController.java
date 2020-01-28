@@ -3,7 +3,6 @@ package life.toughjourney.community.controller;
 
 import life.toughjourney.community.dto.AccessTokenDto;
 import life.toughjourney.community.dto.GithubUser;
-
 import life.toughjourney.community.mapper.UserMapper;
 import life.toughjourney.community.model.User;
 import life.toughjourney.community.provider.GithubProvider;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 

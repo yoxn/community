@@ -8,4 +8,5 @@ package life.toughjourney.community.exception;
  */
 public interface ICustomizeErrorCode {
     String getMessage();
+    Integer getCode();
 }

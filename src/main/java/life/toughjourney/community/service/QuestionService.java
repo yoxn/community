@@ -10,13 +10,16 @@ import life.toughjourney.community.mapper.UserMapper;
 import life.toughjourney.community.model.Question;
 import life.toughjourney.community.model.QuestionExample;
 import life.toughjourney.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author YX
@@ -55,6 +58,7 @@ public class QuestionService {
 
         Integer offset = size * (page - 1);
         QuestionExample questionExample = new QuestionExample();
+
         questionExample.setOrderByClause("gmt_create desc");
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
         List<QuestionDto> questionDtoList = new ArrayList<>();
@@ -66,7 +70,7 @@ public class QuestionService {
             questionDto.setUser(user);
             questionDtoList.add(questionDto);
         }
-        paginationDto.setQuestions(questionDtoList);
+        paginationDto.setData(questionDtoList);
 
         return paginationDto;
     }
@@ -105,7 +109,7 @@ public class QuestionService {
             questionDto.setUser(user);
             questionDtoList.add(questionDto);
         }
-        paginationDto.setQuestions(questionDtoList);
+        paginationDto.setData(questionDtoList);
 
         return paginationDto;
     }
@@ -153,6 +157,30 @@ public class QuestionService {
         question.setViewCount(1);
         questionExtMapper.incView(question);
 
+    }
+
+    public List<QuestionDto> selectRelated(QuestionDto queryDto) {
+        if (StringUtils.isBlank(queryDto.getTag())) {
+            return new ArrayList<>();
+        }
+        String[] tags = StringUtils.split(queryDto.getTag(), ",");
+        String regexpTag = Arrays
+                .stream(tags)
+                .filter(StringUtils::isNotBlank)
+                .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(queryDto.getId());
+        question.setTag(regexpTag);
+
+        List<Question> questions = questionExtMapper.selectRelated(question);
+        List<QuestionDto> questionDtos = questions.stream().map(q -> {
+            QuestionDto questionDto = new QuestionDto();
+            BeanUtils.copyProperties(q, questionDto);
+            return questionDto;
+        }).collect(Collectors.toList());
+        return questionDtos;
     }
 }
 

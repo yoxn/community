@@ -2,6 +2,7 @@ package life.toughjourney.community.controller;
 
 import life.toughjourney.community.dto.PaginationDto;
 import life.toughjourney.community.model.User;
+import life.toughjourney.community.service.NotificationService;
 import life.toughjourney.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,9 @@ public class ProfileController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @GetMapping("/profile/{action}")
     public String profile(HttpServletRequest request,
                           @PathVariable(name = "action") String action,
@@ -37,13 +41,14 @@ public class ProfileController {
         if ("questions".equals(action)) {
             model.addAttribute("section", "questions");
             model.addAttribute("sectionName", "我的提问");
+            PaginationDto paginationDto = questionService.list(user.getId(), page, size);
+            model.addAttribute("pagination", paginationDto);
         } else if ("replies".equals(action)) {
-            model.addAttribute("section", "questions");
+            PaginationDto paginationDto = notificationService.list(user.getId(), page, size);
+            model.addAttribute("section", "replies");
+            model.addAttribute("pagination", paginationDto);
             model.addAttribute("sectionName", "最新回复");
         }
-
-        PaginationDto paginationDto = questionService.list(user.getId(), page, size);
-        model.addAttribute("pagination", paginationDto);
         return "profile";
     }
 }

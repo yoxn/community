@@ -64,7 +64,7 @@ public class CommentService {
             if (question == null) {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
-            commentMapper.insertSelective(comment);
+            commentMapper.insert(comment);
             //增加评论数
             Comment parentComment = new Comment();
             parentComment.setId(comment.getParentId());
@@ -85,7 +85,6 @@ public class CommentService {
             questionExtMapper.incCommentCount(question);
             // 创建通知
             createNotify(comment, question.getCreator(), commentator.getName(), question.getTitle(), NotificationTypeEnum.REPLY_QUESTION, question.getId());
-
         }
     }
 

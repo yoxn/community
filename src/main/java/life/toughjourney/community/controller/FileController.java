@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class FileController {
-
-
     @RequestMapping("/file/upload")
     @ResponseBody
     public FileDto upload(){

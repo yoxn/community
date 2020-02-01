@@ -2,6 +2,7 @@ package life.toughjourney.community.service;
 
 import life.toughjourney.community.dto.PaginationDto;
 import life.toughjourney.community.dto.QuestionDto;
+import life.toughjourney.community.dto.QuestionQueryDto;
 import life.toughjourney.community.exception.CustomizeErrorCode;
 import life.toughjourney.community.exception.CustomizeException;
 import life.toughjourney.community.mapper.QuestionExtMapper;
@@ -38,10 +39,24 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public PaginationDto list(Integer page, Integer size) {
+    public PaginationDto list(String search,Integer page, Integer size) {
+
+        if (StringUtils.isNotBlank(search)) {
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays
+                    .stream(tags)
+                    .filter(StringUtils::isNotBlank)
+                    .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("|"));
+        }
+
         PaginationDto paginationDto = new PaginationDto();
         Integer totalPage;
-        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
+
+        QuestionQueryDto questionQueryDto = new QuestionQueryDto();
+        questionQueryDto.setSearch(search);
+        Integer totalCount =questionExtMapper.countBySearch(questionQueryDto);
         if (totalCount % size == 0) {
             totalPage = totalCount / size;
         } else {
@@ -55,12 +70,12 @@ public class QuestionService {
             page = totalPage;
         }
         paginationDto.setPagination(totalPage, page);
-
         Integer offset = size * (page - 1);
         QuestionExample questionExample = new QuestionExample();
-
         questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
+        questionQueryDto.setSize(size);
+        questionQueryDto.setPage(offset);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDto);
         List<QuestionDto> questionDtoList = new ArrayList<>();
 
         for (Question question : questions) {
@@ -71,7 +86,6 @@ public class QuestionService {
             questionDtoList.add(questionDto);
         }
         paginationDto.setData(questionDtoList);
-
         return paginationDto;
     }
 
@@ -134,7 +148,7 @@ public class QuestionService {
             question.setViewCount(0);
             question.setLikeCount(0);
             question.setCommentCount(0);
-            questionMapper.insertSelective(question);
+            questionMapper.insert(question);
         } else {
             // 更新
             Question updateQuestion = new Question();
@@ -166,9 +180,6 @@ public class QuestionService {
         String[] tags = StringUtils.split(queryDto.getTag(), ",");
         String regexpTag = Arrays
                 .stream(tags)
-                .filter(StringUtils::isNotBlank)
-                .map(t -> t.replace("+", "").replace("*", "").replace("?", ""))
-                .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining("|"));
         Question question = new Question();
         question.setId(queryDto.getId());

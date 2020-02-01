@@ -35,7 +35,7 @@ body {
 }
 
 .question-tag {
-    margin-right: 5px;
+    margin-right: 15px;
 }
 
 .question-related {
@@ -47,7 +47,7 @@ body {
 }
 
 .question-wechat {
-    width: 95%;
+    width: 50%;
 }
 
 .publish-tag-tab {
@@ -84,7 +84,7 @@ body {
 .comments {
     padding-bottom: 5px;
     margin-bottom: 15px;
-    border-bottom: 1px solid #999999;
+    border-bottom: 1px solid #eee;
 }
 
 .sub-comments {

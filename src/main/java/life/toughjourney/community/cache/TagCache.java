@@ -27,7 +27,6 @@ public class TagCache {
         framework.setTags(Arrays.asList("laravel", "spring", "express", "django", "flask", "yii", "ruby-on-rails", "tornado", "koa", "struts"));
         tagDtos.add(framework);
 
-
         TagDto server = new TagDto();
         server.setCategoryName("服务器");
         server.setTags(Arrays.asList("linux", "nginx", "docker", "apache", "ubuntu", "centos", "缓存 tomcat", "负载均衡", "unix", "hadoop", "windows-server"));

@@ -18,6 +18,20 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <db.url>jdbc:h2:~/community</db.url>
+                <db.user>root</db.user>
+                <db.password>yoxn</db.password>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -94,9 +108,9 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>6.2.0</version>
                 <configuration>
-                    <url>jdbc:h2:~/community</url>
-                    <user>root</user>
-                    <password>yoxn</password>
+                    <url>${db.url}</url>
+                    <user>${db.user}</user>
+                    <password>${db.password}</password>
                 </configuration>
                 <dependencies>
                     <dependency>

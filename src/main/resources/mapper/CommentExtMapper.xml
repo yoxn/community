@@ -18,8 +18,8 @@
     <result column="COMMENT_COUNT" jdbcType="INTEGER" property="commentCount" />
   </resultMap>
   <update id="incCommentCount" parameterType="life.toughjourney.community.model.Comment">
-    update COMMENT
-    set  COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
+    update comment
+    set  comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
     where id = #{id}
   </update>
 </mapper>

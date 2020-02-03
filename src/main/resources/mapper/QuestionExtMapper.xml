@@ -13,19 +13,19 @@
         <result column="TAG" jdbcType="VARCHAR" property="tag"/>
     </resultMap>
     <update id="incView" parameterType="life.toughjourney.community.model.Question">
-    update QUESTION
-    set  VIEW_COUNT = VIEW_COUNT + #{viewCount,jdbcType=INTEGER}
+    update question
+    set  view_count = view_count + #{viewCount,jdbcType=INTEGER}
     where id = #{id}
   </update>
 
     <update id="incCommentCount" parameterType="life.toughjourney.community.model.Question">
-    update QUESTION
-    set  COMMENT_COUNT = COMMENT_COUNT + #{commentCount,jdbcType=INTEGER}
+    update question
+    set  comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
     where id = #{id}
   </update>
 
     <select id="selectRelated" parameterType="life.toughjourney.community.model.Question" resultMap="BaseResultMap">
-        select * from QUESTION
+        select * from question
         <where>
             <if test="id != null">
                 and id != #{id}
@@ -39,7 +39,7 @@
 
     <select id="countBySearch" parameterType="life.toughjourney.community.dto.QuestionQueryDto"
             resultType="java.lang.Integer">
-        select count(*) from QUESTION
+        select count(*) from question
         <where>
             <if test="search != null">
                 and title regexp #{search}
@@ -58,7 +58,7 @@
 
     <select id="selectBySearch" parameterType="life.toughjourney.community.dto.QuestionQueryDto"
             resultMap="BaseResultMap">
-        select * from QUESTION
+        select * from question
         <where>
             <if test="search != null and search != ''">
                 and title regexp #{search}
